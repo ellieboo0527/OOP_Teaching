@@ -37,3 +37,4 @@ class Card:
         ]
 
         return "\n".join(color_code + line + reset_code for line in lines)
+    
