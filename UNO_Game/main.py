@@ -2,6 +2,7 @@ import os
 
 from deck import Deck
 from player import Player
+from card import Card
 
 def clear_screen():
     if os.name == "nt":
@@ -49,41 +50,74 @@ def get_card_choice(player):
         except ValueError:
             print("Please enter a valid number.")
 
+def player_turn(player, deck, last_top_card,round):
 
-deck = Deck()
-player1 = Player("Player 1")
+    if round == 1:
+        for i in range(5):
+            player.draw_card(deck)
+    round += 1
 
-for i in range(5):
-    player1.draw_card(deck)
+    if last_top_card.value == 100:
+        top_card = deck.draw()
+    else:
+        top_card = last_top_card
 
-top_card = deck.draw()
+    input("Press Enter to clear the screen and start your turn...")
+    clear_screen()
 
-input("Press Enter to clear the screen and start your turn...")
-clear_screen()
-
-print("Top card:")
-print(top_card)
-
-print_hand(player1)
-
-choice = get_card_choice(player1)
-chosen_card = player1.hand[choice]
-
-print("You chose:")
-print(chosen_card)
-
-if chosen_card.can_play_on(top_card):
-
-    top_card = player1.play_card(choice)
-
-    print("New top card:")
+    print("Top card:")
     print(top_card)
 
-else:
-    print("You cannot play this card.")
-    print("You need to draw a card.")
+    print_hand(player)
 
-    player1.draw_card(deck)
+    choice = get_card_choice(player)
+    chosen_card = player.hand[choice]
 
-    print("Your hand after drawing:")
-    print_hand(player1)
+    print("You chose:")
+    print(chosen_card)
+
+    if chosen_card.can_play_on(top_card):
+
+        top_card = player.play_card(choice)
+
+        print("New top card:")
+        print(chosen_card)
+        last_top_card = chosen_card
+
+    else:
+        print("You cannot play this card.")
+        print("You need to draw a card.")
+
+        player.draw_card(deck)
+        last_top_card = top_card
+
+        print("Your hand after drawing:")
+        print_hand(player)
+    
+    return round, last_top_card
+
+
+# Game initialization and start
+deck = Deck()
+last_top_card = Card(color='White',value=100)
+round1 = 1
+round2 = 1
+player1 = Player("Player 1")
+player2 = Player("Player 2")
+
+while True:
+    print(f'This is round {round1}:')
+    print('--------------------------')
+    round1, last_top_card = player_turn(player1,deck,last_top_card,round1)
+    round2, last_top_card = player_turn(player2,deck,last_top_card,round2)
+
+    if player1.has_won():
+        print("player 1 has won")
+        break
+    elif player2.has_won():
+        print("player 2 has won")
+        break
+    else:
+        print("no one wins yet...")        
+
+

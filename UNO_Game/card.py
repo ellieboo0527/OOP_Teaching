@@ -8,32 +8,32 @@ class Card:
         return self.color == top_card.color or self.value == top_card.value
 
     def get_color_code(self):
-        if self.color == "Red":
+        if self.color == "red":
             return "\033[31m"
-        elif self.color == "Blue":
+        elif self.color == "blue":
             return "\033[34m"
-        elif self.color == "Green":
+        elif self.color == "green":
             return "\033[32m"
-        elif self.color == "Yellow":
+        elif self.color == "yellow":
             return "\033[33m"
         else:
             return "\033[0m"
 
     def __str__(self):
         color_code = self.get_color_code()
-        reset_code = "\033[0m"
+        reset_code = "\033[0m" 
 
         color_text = str(self.color).upper()
         value_text = str(self.value).upper()
 
-        card_text = (
-            "╭───────────╮\n"
-            f"│ {color_text:<9} │\n"
-            "│           │\n"
-            f"│ {value_text:^9} │\n"
-            "│           │\n"
-            f"│ {color_text:>9} │\n"
+        lines = [
+            "╭───────────╮",
+            f"│ {color_text:<9} │",
+            "│           │",
+            f"│ {value_text:^9} │",
+            "│           │",
+            f"│ {color_text:>9} │",
             "╰───────────╯"
-        )
+        ]
 
-        return color_code + card_text + reset_code
+        return "\n".join(color_code + line + reset_code for line in lines)
